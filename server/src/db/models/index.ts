@@ -49,6 +49,7 @@ fs.readdirSync(__dirname)
 		const model = modelFn.default(sequelize, DataTypes);
 		db[model.name] = model;
 	});
+
 Object.keys(db).forEach((modelName) => {
 	if (db[modelName].associate) {
 		db[modelName].associate(db);
@@ -57,7 +58,5 @@ Object.keys(db).forEach((modelName) => {
 
 db.sequelize = sequelize;
 db.Sequelize = Sequelize;
-
-console.log(db.User);
 
 export default db;

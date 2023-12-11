@@ -16,9 +16,9 @@
 		"sequelize": "^6.35.1"
 	},
 	"devDependencies": {
+		"@types/bcryptjs": "^2.4.6",
 		"@types/express": "^4.17.21",
 		"@types/node": "^20.10.4",
-		"@types/uuid": "^9.0.7",
 		"dotenv": "^16.3.1",
 		"ts-node-dev": "^2.0.0",
 		"typescript": "^5.3.3"
