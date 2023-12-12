@@ -1,5 +1,6 @@
 import { createRouter, createWebHistory } from "vue-router";
-import useAuthStore from "../store/auth.ts";
+import { AxiosError } from "axios";
+import useAuthStore from "@/store/auth.ts";
 
 const router = createRouter({
 	history: createWebHistory(import.meta.env.BASE_URL),
@@ -7,16 +8,23 @@ const router = createRouter({
 		{
 			path: "/",
 			component: () => import("../layouts/RootLayout.vue"),
-			beforeEnter: (_to, _from, next) => {
-				const userStore = useAuthStore();
-				if (!userStore.isAuthenticated) next({ name: "signup" });
-				else next();
+			beforeEnter: async (_to, _from, next) => {
+				try {
+					const { loggedUser, getUser } = useAuthStore();
+
+					if (!loggedUser.isLoggedIn) {
+						await getUser();
+					}
+					next();
+				} catch (err) {
+					next({ name: "signin" });
+				}
 			},
 
 			children: [
 				{
 					path: "/",
-					name: "Home",
+					name: "home",
 					component: () => import("../views/HomeView.vue"),
 				},
 			],
@@ -24,10 +32,18 @@ const router = createRouter({
 		{
 			path: "/",
 			component: () => import("../layouts/AuthLayout.vue"),
-			beforeEnter: (_to, _from, next) => {
-				const userStore = useAuthStore();
-				if (userStore.isAuthenticated) next({ name: "home" });
-				else next();
+			beforeEnter: async (_to, _from, next) => {
+				try {
+					const { loggedUser, getUser } = useAuthStore();
+					await getUser();
+
+					if (loggedUser.isLoggedIn) throw new Error();
+
+					next();
+				} catch (err) {
+					if (err instanceof AxiosError) next();
+					else next({ name: "home" });
+				}
 			},
 			children: [
 				{
