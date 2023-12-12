@@ -26,7 +26,7 @@ export default class AuthController {
 			};
 			await db.User.create(payload);
 
-			res.status(201).json({ message: "User creation was successful" });
+			res.status(201).json({ message: "User creation is successful" });
 		} catch (err) {
 			next(err);
 		}
@@ -54,14 +54,22 @@ export default class AuthController {
 				.cookie("auth_key", token, {
 					httpOnly: true,
 				})
-				.json(payload);
+				.json({
+					id: user.id,
+					name: user.name,
+					username: user.username,
+					imageUrl: user.imageUrl,
+				});
 		} catch (err) {
 			next(err);
 		}
 	}
 
 	static removeAuthToken(req: Request, res: Response) {
-		res.clearCookie("auth_key").status(200);
+		res
+			.clearCookie("auth_key")
+			.status(200)
+			.json({ message: "Removed session successfully" });
 	}
 
 	static async getUser(req: Request, res: Response, next: NextFunction) {
