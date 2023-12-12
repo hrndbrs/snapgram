@@ -27,6 +27,48 @@ const router = createRouter({
 					name: "home",
 					component: () => import("../views/HomeView.vue"),
 				},
+				{
+					path: "explore",
+					name: "explore",
+					component: () => import("../views/ExploreView.vue"),
+				},
+				{
+					path: "users",
+					children: [
+						{
+							path: "",
+							name: "users",
+							component: () => import("../views/AllUsersView.vue"),
+						},
+						{
+							path: ":id",
+							component: () => import("../views/ProfileView.vue"),
+						},
+					],
+				},
+				{
+					path: "saved",
+					name: "saved",
+					component: () => import("../views/SavedPostsView.vue"),
+				},
+				{
+					path: "post",
+					children: [
+						{
+							path: ":id",
+							component: () => import("../views/PostDetailsView.vue"),
+						},
+						{
+							path: "update/:id",
+							component: () => import("../views/UpdatePostView.vue"),
+						},
+						{
+							path: "create",
+							name: "create",
+							component: () => import("../views/CreatePostView.vue"),
+						},
+					],
+				},
 			],
 		},
 		{

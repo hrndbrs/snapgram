@@ -33,12 +33,16 @@ const useAuthStore = defineStore("auth", () => {
 		setLoggedUser(user);
 	}
 
+	async function signOutAccount() {
+		await serverClient.post("/logout");
+	}
+
 	async function getUser() {
 		const { data: user }: { data: TUser } = await serverClient.get("/user");
 		setLoggedUser(user);
 	}
 
-	return { loggedUser, createNewUser, signInUser, getUser };
+	return { loggedUser, createNewUser, signInUser, getUser, signOutAccount };
 });
 
 export default useAuthStore;

@@ -7,7 +7,7 @@ import {
 import useAuthStore from "@/store/auth";
 import { TNewUser } from "../types";
 
-const { createNewUser, signInUser } = useAuthStore();
+const { createNewUser, signInUser, signOutAccount } = useAuthStore();
 
 export function useCreateUserAccount() {
 	return useMutation({
@@ -18,5 +18,11 @@ export function useCreateUserAccount() {
 export function useSignInAccount() {
 	return useMutation({
 		mutationFn: (user: { email: string; password: string }) => signInUser(user),
+	});
+}
+
+export function useSignOut() {
+	return useMutation({
+		mutationFn: signOutAccount,
 	});
 }
