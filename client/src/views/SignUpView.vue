@@ -1,7 +1,8 @@
 <script setup lang="ts">
-import { ref } from "vue";
 import { RouterLink, useRouter } from "vue-router";
 import { useForm } from "vee-validate";
+import { AxiosError } from "axios";
+
 import { Button } from "@/components/ui/button";
 import {
 	FormControl,
@@ -11,26 +12,36 @@ import {
 	FormMessage,
 } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
+import { useToast } from "@/components/ui/toast";
 import Loader from "@/components/shared/Loader.vue";
+
 import { SignUpValidationSchema } from "@/lib/validation";
-import useAuthStore from "@/store/auth";
+import {
+	useCreateUserAccount,
+	useSignInAccount,
+} from "@/lib/ts-query/queriesAndMutation";
 
-const isLoading = ref(false);
+const { mutateAsync: createUserAccount, isPending } = useCreateUserAccount();
+const { mutateAsync: signInUser } = useSignInAccount();
 const router = useRouter();
-
-const { createNewUser } = useAuthStore();
-const { handleSubmit } = useForm({
+const { toast } = useToast();
+const { handleSubmit, resetForm } = useForm({
 	validationSchema: SignUpValidationSchema,
 });
 
 const onSubmit = handleSubmit(async (payload) => {
-	isLoading.value = true;
 	try {
-		await createNewUser(payload);
-		router.push({ name: "signin" });
+		const newUser = await createUserAccount(payload);
+		await signInUser(newUser);
+		router.push({ name: "home" });
+		resetForm();
 	} catch (err) {
-	} finally {
-		isLoading.value = false;
+		if (err instanceof AxiosError) {
+			toast({
+				title: "Sign up failed",
+				description: err.response?.data as string,
+			});
+		}
 	}
 });
 </script>
@@ -78,7 +89,7 @@ const onSubmit = handleSubmit(async (payload) => {
 				</FormItem>
 			</FormField>
 			<Button type="submit" class="shad-button_primary">
-				<div v-if="isLoading" class="flex-center gap-2">
+				<div v-if="isPending" class="flex-center gap-2">
 					<Loader /> Loading...
 				</div>
 				<template v-else>Sign up</template>

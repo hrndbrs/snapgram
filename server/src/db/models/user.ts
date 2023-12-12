@@ -3,20 +3,27 @@ import {
 	Model,
 	Sequelize,
 	StringDataTypeConstructor,
+	TextDataTypeConstructor,
 	AbstractDataTypeConstructor,
 } from "sequelize";
-import { hashPassword } from "../../middlewares/bcryptjs";
+import { hashPassword } from "../../lib/middlewares/bcryptjs";
 import {
 	type TUserAttributes,
 	type TUserCreationAttributes,
-} from "../../types";
+	type ISequelizeModel,
+} from "../../lib/types";
 
 export default (
 	sequelize: Sequelize,
 	{
 		STRING,
 		UUID,
-	}: { STRING: StringDataTypeConstructor; UUID: AbstractDataTypeConstructor }
+		TEXT,
+	}: {
+		STRING: StringDataTypeConstructor;
+		UUID: AbstractDataTypeConstructor;
+		TEXT: TextDataTypeConstructor;
+	}
 ) => {
 	class User extends Model<
 		Omit<TUserAttributes, "createdAt" | "updatedAt">,
@@ -27,8 +34,27 @@ export default (
 		declare email: string;
 		declare username: string;
 		declare password: string;
+		declare imageUrl: URL;
+		declare bio: string;
+		declare createdAt: Date;
+		declare updatedAt: Date;
 
-		static associate(models: any) {}
+		static associate(models: ISequelizeModel<User>) {
+			User.hasMany(models.Post, {
+				foreignKey: "creatorId",
+				as: "creator",
+			});
+			User.belongsToMany(models.Post, {
+				foreignKey: "userId",
+				through: models.Like,
+				as: "liked",
+			});
+			User.belongsToMany(models.Post, {
+				foreignKey: "userId",
+				through: models.Save,
+				as: "saved",
+			});
+		}
 	}
 	User.init(
 		{
@@ -44,18 +70,23 @@ export default (
 			},
 			username: {
 				type: STRING,
-				unique: true,
+				unique: { name: "username", msg: "Username is already taken" },
 				allowNull: false,
 			},
 			email: {
 				type: STRING,
-				unique: true,
+				unique: { name: "email", msg: "Email is already taken" },
 				allowNull: false,
+				validate: {
+					isEmail: true,
+				},
 			},
 			password: {
 				type: STRING,
 				allowNull: false,
 			},
+			imageUrl: STRING,
+			bio: TEXT,
 		},
 		{
 			sequelize,

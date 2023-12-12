@@ -1,6 +1,9 @@
-export type TNewUser = {
+export type TUser = {
+	id: string;
 	name: string;
 	email: string;
 	username: string;
-	password: string;
+	imageUrl: string;
 };
+
+export type TNewUser = Omit<TUser, "imageUrl" | "id"> & { password: string };
