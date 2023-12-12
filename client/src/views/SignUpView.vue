@@ -13,7 +13,7 @@ import {
 } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
 import { useToast } from "@/components/ui/toast";
-import Loader from "@/components/shared/Loader.vue";
+import { Loader } from "@/components/shared";
 
 import { SignUpValidationSchema } from "@/lib/validation";
 import {
@@ -48,7 +48,7 @@ const onSubmit = handleSubmit(async (payload) => {
 
 <template>
 	<div class="sm:w-420 flex-center flex-col">
-		<img src="../assets/images/logo.svg" alt="logo" />
+		<img src="@/assets/images/logo.svg" alt="logo" />
 		<h2 class="h3-bold md:h2-bold pt-5 sm:pt-12">Create a new account</h2>
 		<p class="text-light-3 small-medium md:base-regular mt-2">It's free!</p>
 		<form @submit="onSubmit" class="flex flex-col gap-5 w-full mt-4">

@@ -5,7 +5,7 @@ const size = 24;
 <template>
 	<div class="flex-center w-full">
 		<img
-			src="../../assets/icons/loader.svg"
+			src="@/assets/icons/loader.svg"
 			alt="loader"
 			:width="size"
 			:height="size"
