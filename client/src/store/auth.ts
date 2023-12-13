@@ -33,8 +33,8 @@ const useAuthStore = defineStore("auth", () => {
 		setLoggedUser(user);
 	}
 
-	async function signOutAccount() {
-		await serverClient.post("/logout");
+	function signOutAccount() {
+		return serverClient.post("/logout");
 	}
 
 	async function getUser() {
