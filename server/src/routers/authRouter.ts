@@ -4,12 +4,13 @@ import { authenticateUser } from "../lib/middlewares/authentication";
 
 const router = express.Router();
 
-router.post("/register", AuthController.createNewUser);
-router.post("/signin", AuthController.signInUser);
+router
+	.post("/register", AuthController.createNewUser)
+	.post("/signin", AuthController.signInUser)
 
-router.use(authenticateUser);
+	.use(authenticateUser)
 
-router.get("/user", AuthController.getUser);
-router.post("/logout", AuthController.removeAuthToken);
+	.get("/user", AuthController.getUser)
+	.post("/logout", AuthController.removeAuthToken);
 
 export default router;

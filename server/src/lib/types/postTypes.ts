@@ -4,6 +4,7 @@ export type TPostAttributes = {
 	caption: string;
 	tags: string;
 	imageUrl: string;
+	imageId: string;
 	location: string;
 	createdAt: Date;
 	updatedAt: Date;

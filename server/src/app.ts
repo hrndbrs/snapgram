@@ -8,13 +8,13 @@ import router from "./routers";
 const app: Application = express();
 const PORT = +process.env.PORT!;
 
-app.use(cors({ origin: "http://localhost:3000", credentials: true }));
-app.use(cookieParser());
-app.use(express.json());
-app.use(express.urlencoded({ extended: true }));
+app
+	.use(cors({ origin: "http://localhost:3000", credentials: true }))
+	.use(cookieParser())
+	.use(express.json())
+	.use(express.urlencoded({ extended: true }))
 
-app.use(router);
-
-app.use(errorHandler);
+	.use(router)
+	.use(errorHandler);
 
 app.listen(PORT, () => console.log("Port :", PORT));
