@@ -24,3 +24,12 @@ export const SignUpValidationSchema = toTypedSchema(
 			.min(8, { message: "Password should be at least 8 characters" }),
 	})
 );
+
+export const PostValidation = toTypedSchema(
+	z.object({
+		caption: z.string().max(2200),
+		file: z.custom<File>(),
+		location: z.string().max(100),
+		tags: z.string(),
+	})
+);
