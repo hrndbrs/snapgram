@@ -28,6 +28,10 @@ module.exports = {
         allowNull: false,
         type: Sequelize.STRING,
       },
+      imageId: {
+        allowNull: false,
+        type: Sequelize.STRING,
+      },
       location: {
         type: Sequelize.STRING
       },

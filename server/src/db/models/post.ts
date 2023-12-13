@@ -72,6 +72,10 @@ export default (
 				type: STRING,
 				allowNull: false,
 			},
+			imageId: {
+				type: STRING,
+				allowNull: false,
+			},
 			location: STRING,
 		},
 		{
