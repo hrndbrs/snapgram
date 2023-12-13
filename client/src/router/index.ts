@@ -41,7 +41,7 @@ const router = createRouter({
 							component: () => import("../views/AllUsersView.vue"),
 						},
 						{
-							path: ":id",
+							path: ":username",
 							component: () => import("../views/ProfileView.vue"),
 						},
 					],
@@ -56,11 +56,16 @@ const router = createRouter({
 					children: [
 						{
 							path: ":id",
-							component: () => import("../views/PostDetailsView.vue"),
-						},
-						{
-							path: "update/:id",
-							component: () => import("../views/UpdatePostView.vue"),
+							children: [
+								{
+									path: "",
+									component: () => import("../views/PostDetailsView.vue"),
+								},
+								{
+									path: "update",
+									component: () => import("../views/UpdatePostView.vue"),
+								},
+							],
 						},
 						{
 							path: "create",

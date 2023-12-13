@@ -34,7 +34,7 @@ async function signOut() {
 				/>
 			</RouterLink>
 			<RouterLink
-				:to="`/users/${loggedUser.id}`"
+				:to="`/users/${loggedUser.username}`"
 				class="flex gap-3 items-center"
 			>
 				<img

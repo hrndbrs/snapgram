@@ -35,7 +35,10 @@ async function signOut() {
 				<Button variant="ghost" class="shad-button_ghost" @click="signOut">
 					<img src="@/assets/icons/logout.svg" alt="logout" />
 				</Button>
-				<RouterLink :to="`/users/${loggedUser.id}`" class="flex-center gap-3">
+				<RouterLink
+					:to="`/users/${loggedUser.username}`"
+					class="flex-center gap-3"
+				>
 					<img
 						:src="loggedUser.imageUrl"
 						alt="profile"
