@@ -16,6 +16,10 @@ export {
 	type TPostAttributes,
 	type TPostCreationAttributes,
 } from "./postTypes";
+export {
+	type TStatAttributes,
+	type TStatCreationAttributes,
+} from "./statTypes";
 
 export interface ISequelizeModel<T extends Model<any, any>> {
 	[key: string]: ModelStatic<T>;

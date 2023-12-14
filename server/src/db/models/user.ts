@@ -44,16 +44,24 @@ export default (
 				foreignKey: "creatorId",
 				as: "creator",
 			});
-			User.belongsToMany(models.Post, {
+			User.hasMany(models.Like, {
 				foreignKey: "userId",
-				through: models.Like,
-				as: "liked",
+				as: "likes",
 			});
-			User.belongsToMany(models.Post, {
+			User.hasMany(models.Save, {
 				foreignKey: "userId",
-				through: models.Save,
-				as: "saved",
+				as: "saves",
 			});
+			// User.belongsToMany(models.Post, {
+			// 	foreignKey: "userId",
+			// 	through: models.Like,
+			// 	as: "liked",
+			// });
+			// User.belongsToMany(models.Post, {
+			// 	foreignKey: "userId",
+			// 	through: models.Save,
+			// 	as: "saved",
+			// });
 		}
 	}
 	User.init(
