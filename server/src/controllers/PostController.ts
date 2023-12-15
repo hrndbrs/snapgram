@@ -98,7 +98,13 @@ export default class PostController {
 	static async getPostById(req: Request, res: Response, next: NextFunction) {
 		try {
 			const { id } = req.params;
-			const postDetail = await db.Post.findByPk(id);
+			const postDetail = await db.Post.findByPk(id, {
+				include: {
+					model: db.User,
+					as: "createdBy",
+					attributes: ["imageUrl", "name", "username"],
+				},
+			});
 			if (!postDetail) throw new BaseError("NotFound", "Post is not available");
 
 			res.status(200).json(postDetail);
