@@ -11,7 +11,7 @@ const PORT = +process.env.PORT!;
 app
 	.use(cors({ origin: "http://localhost:3000", credentials: true }))
 	.use(cookieParser())
-	.use(express.json())
+	.use(express.json({ limit: "20mb" }))
 	.use(express.urlencoded({ extended: true }))
 
 	.use(router)
