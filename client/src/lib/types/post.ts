@@ -1,19 +1,25 @@
 import { TUser } from "./user";
 
-export type TPost = {
-	id: string;
-	creatorId: string;
-	caption: string;
-	tags: string;
+export type TImage = {
 	imageUrl: string;
 	imageId: string;
-	location: string;
-	createdBy?: Partial<TUser>;
-	createdAt?: string;
-	updatedAt?: string;
 };
 
-export type TNewPost = Omit<TPost, "creatorId" | "id">;
+export type TNewPost = {
+	caption: string;
+	tags: string;
+	file: File;
+	location: string;
+};
+
+export type TPost = Omit<TNewPost, "file"> &
+	TImage & {
+		id: string;
+		creatorId: string;
+		createdBy?: Partial<TUser>;
+		createdAt?: string;
+		updatedAt?: string;
+	};
 
 export type TPostStatsProps = {
 	post: TPost;
