@@ -1,7 +1,12 @@
 <script setup lang="ts">
+import { useRouter } from "vue-router";
+import { AxiosError } from "axios";
 import { useForm } from "vee-validate";
 import { PostValidation } from "@/lib/validation";
-import { useCreatePost } from "@/lib/ts-query/queriesAndMutation";
+import {
+	useCreatePost,
+	useUpdatePost,
+} from "@/lib/ts-query/queriesAndMutation";
 import { TPost } from "@/lib/types";
 import { Button } from "@/components/ui/button";
 import {
@@ -15,56 +20,36 @@ import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
 import { FileUploader } from "@/components/shared";
 import { useToast } from "@/components/ui/toast";
-import { useRouter } from "vue-router";
-import axios, { AxiosError } from "axios";
 
 const router = useRouter();
 const { toast } = useToast();
-const { post } = defineProps<{ post?: TPost }>();
-const { mutateAsync: createPost } = useCreatePost();
+const { post, action } = defineProps<{
+	post?: TPost;
+	action: "add" | "update";
+}>();
+const { mutateAsync: createPost, isPending: isCreating } = useCreatePost();
+const { mutateAsync: updatePost, isPending: isUpdating } = useUpdatePost();
 
 const { handleSubmit, resetForm } = useForm({
 	validationSchema: PostValidation,
+	initialValues: {
+		caption: post?.caption,
+		tags: post?.tags,
+		location: post?.location,
+	},
 });
 
 const onSubmit = handleSubmit(async (payload) => {
 	try {
-		const { caption, file, location, tags } = payload;
-		const image = new FormData();
-		image.append("file", file);
-
-		const { data }: { data: { secure_url: string; public_id: string } } =
-			await axios.post(
-				`https://api.cloudinary.com/v1_1/${
-					import.meta.env.VITE_CLOUDINARY_NAME
-				}/upload`,
-				image,
-				{
-					headers: {
-						"Content-Type": "multipart/form-data",
-					},
-					params: {
-						upload_preset: import.meta.env.VITE_UPLOAD_PRESET,
-					},
-				}
-			);
-
-		// console.log(data, 51);
-
-		const imageUrl = data.secure_url;
-		const imageId = data.public_id;
-
-		const newPost = {
-			caption,
-			location,
-			tags,
-			imageUrl,
-			imageId,
-		};
-
-		await createPost(newPost);
-		resetForm();
-		router.push({ name: "home" });
+		if (post && action === "update") {
+			await updatePost({ post, input: payload });
+			resetForm();
+			router.push(`/post/${post.id}`);
+		} else {
+			await createPost(payload);
+			resetForm();
+			router.push({ name: "home" });
+		}
 	} catch (err) {
 		if (err instanceof AxiosError)
 			toast({
@@ -127,8 +112,12 @@ const onSubmit = handleSubmit(async (payload) => {
 		</FormField>
 		<div class="flex gap-4 items-center justify-end">
 			<Button type="button" class="shad-button_dark_4">Cancel</Button>
-			<Button type="submit" class="whitespace-nowrap shad-button_primary">
-				Submit
+			<Button
+				type="submit"
+				class="whitespace-nowrap shad-button_primary capitalize"
+				:disabled="isCreating || isUpdating"
+			>
+				{{ isCreating || isUpdating ? "Loading..." : `${action} Post` }}
 			</Button>
 		</div>
 	</form>

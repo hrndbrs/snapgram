@@ -2,7 +2,8 @@ import {
 	useQuery,
 	useMutation,
 	useQueryClient,
-	useInfiniteQuery,
+	QueryClient,
+	// useInfiniteQuery,
 } from "@tanstack/vue-query";
 import { useAuthStore, usePostStore } from "@/store";
 import { QUERY_KEYS } from "./queryKeys";
@@ -10,7 +11,10 @@ import { QUERY_KEYS } from "./queryKeys";
 const { createNewUser, signInUser, signOutAccount } = useAuthStore();
 const {
 	uploadPost,
+	updatePost,
+	deletePost,
 	getPosts,
+	getPostById,
 	getPostStat,
 	likePost,
 	savePost,
@@ -49,10 +53,50 @@ export function useCreatePost() {
 	});
 }
 
+export function useUpdatePost() {
+	const queryClient = new QueryClient();
+
+	return useMutation({
+		mutationFn: updatePost,
+		onSuccess: (data) => {
+			queryClient.invalidateQueries({
+				queryKey: [QUERY_KEYS.GET_RECENT_POSTS],
+			});
+			queryClient.invalidateQueries({
+				queryKey: [QUERY_KEYS.GET_POST_BY_ID, data.postId],
+			});
+		},
+	});
+}
+
+export function deletePostById() {
+	const queryClient = new QueryClient();
+
+	return useMutation({
+		mutationFn: deletePost,
+		onSuccess: (data) => {
+			queryClient.invalidateQueries({
+				queryKey: [QUERY_KEYS.GET_RECENT_POSTS],
+			});
+			queryClient.invalidateQueries({
+				queryKey: [QUERY_KEYS.GET_POST_BY_ID, data.postId],
+			});
+		},
+	});
+}
+
 export function useGetRecentPosts() {
 	return useQuery({
 		queryKey: [QUERY_KEYS.GET_RECENT_POSTS],
 		queryFn: getPosts,
+	});
+}
+
+export function useGetPostBydId(postId: string) {
+	return useQuery({
+		queryKey: [QUERY_KEYS.GET_POST_BY_ID, postId],
+		queryFn: () => getPostById(postId),
+		enabled: !!postId,
 	});
 }
 

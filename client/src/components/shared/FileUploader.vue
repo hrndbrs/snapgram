@@ -5,16 +5,13 @@ import { useDropzone } from "vue3-dropzone";
 import { FileWithPath } from "file-selector";
 
 // const files = ref<FileWithPath[]>([]);
-const fileUrl = ref("");
 
-const {
-	fieldChange,
-	// mediaUrl
-} = defineProps<{
+const { fieldChange, mediaUrl } = defineProps<{
 	fieldChange: (files: FileWithPath) => void;
 	mediaUrl?: string;
 }>();
 
+const fileUrl = ref(mediaUrl);
 function onDrop(acceptedFiles: FileWithPath[]) {
 	// files.value = acceptedFiles;
 	fieldChange(acceptedFiles[0]);

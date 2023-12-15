@@ -22,12 +22,12 @@ export function formatDate(dateString: string | undefined): string | undefined {
 	} else if (secondsDiff < 60 ** 2) {
 		const mins = Math.floor(secondsDiff / 60);
 		return `${mins} ${mins === 1 ? "minute" : "minutes"} ago`;
-	} else if (secondsDiff < 60 ** 3) {
+	} else if (secondsDiff < 24 * 60 ** 2) {
 		const hrs = Math.floor(secondsDiff / 60 ** 2);
 		return `${hrs} ${hrs === 1 ? "hour" : "hours"} ago`;
 	}
 
-	const days = Math.floor(secondsDiff / (60 ** 2 * 24));
+	const days = Math.floor(secondsDiff / (24 * 60 ** 2));
 
 	return `${days} ${days === 1 ? "day" : "days"} ago`;
 }

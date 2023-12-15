@@ -16,7 +16,7 @@ const logoSize = 36;
 				/>
 				<h2 class="h3-bold md:h2-bold text-left w-full">Create Post</h2>
 			</div>
-			<PostForm />
+			<PostForm action="add" />
 		</div>
 	</div>
 </template>
