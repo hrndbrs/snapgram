@@ -3,7 +3,7 @@ export function generateLogoURL(imgUrl: string, relativePath: string): string {
 	return new URL(imgUrl, import.meta.url).href;
 }
 
-export function separateTags(tags: string): string[] {
+export function separateTags(tags: string = ""): string[] {
 	return tags.replace(/ /g, "").split(",");
 }
 

@@ -17,7 +17,7 @@ const editIconSize = 20;
 					<img
 						:src="post.createdBy?.imageUrl"
 						:alt="`@${post.createdBy?.username}`"
-						class="rounded-full w-12 lg:h-12 object-cover"
+						class="rounded-full w-12 h-12 object-cover"
 					/>
 				</RouterLink>
 				<div class="flex flex-col">
@@ -53,8 +53,8 @@ const editIconSize = 20;
 						#{{ tag }}
 					</li>
 				</ul>
-				<img :src="post.imageUrl" :alt="post.id" class="post-card_img" />
 			</div>
+			<img :src="post.imageUrl" :alt="post.id" class="post-card_img" />
 		</RouterLink>
 		<PostStats :post="post" :userId="loggedUser.id" />
 	</div>

@@ -4,3 +4,4 @@ export { default as BottomBar } from "./BottomBar.vue";
 export { default as LeftSideBar } from "./LeftSideBar.vue";
 export { default as FileUploader } from "./FileUploader.vue";
 export { default as PostCard } from "./PostCard.vue";
+export { default as PostStats } from "./PostStats.vue";
