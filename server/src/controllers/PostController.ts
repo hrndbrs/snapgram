@@ -1,9 +1,38 @@
 import { Request, Response, NextFunction } from "express";
 import db from "../db/models";
+import cld from "../config/cloudinary";
 import { type TPostCreationAttributes } from "../lib/types";
 import { BaseError } from "../lib/classes";
 
 export default class PostController {
+	static async uploadImage(req: Request, res: Response, next: NextFunction) {
+		try {
+			const { image: base64data } = req.body;
+			const result = await cld.uploader.upload(base64data);
+			res.status(201).json(result);
+		} catch (err) {
+			next(err);
+		}
+	}
+
+	static async deleteImageFromStorage(
+		req: Request,
+		res: Response,
+		next: NextFunction
+	) {
+		try {
+			const { imageId } = req.params;
+			const result = await cld.uploader.destroy(imageId);
+
+			if (result.result !== "ok")
+				throw new BaseError("InternalServer", "Unable to delete image");
+
+			res.status(200).json({ message: "Image deleted successfully" });
+		} catch (err) {
+			next(err);
+		}
+	}
+
 	static async createNewPost(req: Request, res: Response, next: NextFunction) {
 		try {
 			const { id: creatorId } = (req as Request & { user: { id: string } })
@@ -26,7 +55,63 @@ export default class PostController {
 		}
 	}
 
-	static async getRecentPosts(req: Request, res: Response, next: NextFunction) {
+	static async updatePost(req: Request, res: Response, next: NextFunction) {
+		try {
+			const { id } = req.params;
+			const { caption, location, imageUrl, imageId, tags } = req.body;
+
+			const post = await db.Post.findByPk(id);
+
+			if (!post) throw new BaseError("NotFound", "Post was not found");
+
+			const payload = { caption, tags, imageId, imageUrl, location };
+
+			await db.Post.update(payload, { where: { id } });
+
+			res.status(200).json({
+				postId: id,
+				message: `Post ${id} has been updated successfully`,
+			});
+		} catch (err) {
+			next(err);
+		}
+	}
+
+	static async deletePost(req: Request, res: Response, next: NextFunction) {
+		try {
+			const { id } = req.params;
+			const post = await db.Post.findByPk(id);
+
+			if (!post) throw new BaseError("NotFound", "Post is not found");
+
+			await db.Post.destroy({ where: { id } });
+
+			res.status(200).json({
+				postId: id,
+				message: `Post ${id} has been deleted successfully`,
+			});
+		} catch (err) {
+			next(err);
+		}
+	}
+
+	static async getPostById(req: Request, res: Response, next: NextFunction) {
+		try {
+			const { id } = req.params;
+			const postDetail = await db.Post.findByPk(id);
+			if (!postDetail) throw new BaseError("NotFound", "Post is not available");
+
+			res.status(200).json(postDetail);
+		} catch (err) {
+			next(err);
+		}
+	}
+
+	static async getRecentPosts(
+		_req: Request,
+		res: Response,
+		next: NextFunction
+	) {
 		try {
 			const posts = await db.Post.findAll({
 				order: [["createdAt", "DESC"]],
