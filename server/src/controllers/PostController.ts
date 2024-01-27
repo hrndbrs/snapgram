@@ -144,11 +144,13 @@ export default class PostController {
 			const { count, rows: likes } = await db.Like.findAndCountAll(options);
 			const saves = await db.Save.findAll(options);
 
-			res.status(200).json({
+			const postStats = {
 				likes,
 				count,
 				saves,
-			});
+			};
+
+			res.status(200).json(postStats);
 		} catch (err) {
 			next(err);
 		}
@@ -175,12 +177,17 @@ export default class PostController {
 		next: NextFunction
 	) {
 		try {
-			const { likeId: id } = req.params;
-			const deletedLike = await db.Like.findByPk(id);
+			const { id: userId } = (req as Request & { user: { id: string } }).user;
+			const { id: postId } = req.params;
+
+			const options = {
+				where: { userId, postId },
+			};
+
+			const deletedLike = await db.Like.findOne(options);
+
 			if (!deletedLike) throw new BaseError("NotFound", "Like is not found");
-			await db.Like.destroy({
-				where: { id },
-			});
+			await db.Like.destroy(options);
 
 			res.status(200).json(deletedLike);
 		} catch (err) {
@@ -213,12 +220,17 @@ export default class PostController {
 		next: NextFunction
 	) {
 		try {
-			const { saveId: id } = req.params;
-			const deletedSave = await db.Save.findByPk(id);
+			const { id: postId } = req.params;
+			const { id: userId } = (req as Request & { user: { id: string } }).user;
+
+			const options = {
+				where: { userId, postId },
+			};
+
+			const deletedSave = await db.Save.findOne(options);
+
 			if (!deletedSave) throw new BaseError("NotFound", "Record is not found");
-			await db.Save.destroy({
-				where: { id },
-			});
+			await db.Save.destroy(options);
 
 			res.status(200).json(deletedSave);
 		} catch (err) {

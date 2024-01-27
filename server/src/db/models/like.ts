@@ -15,14 +15,14 @@ export default (
 		TStatCreationAttributes
 	> {
 		static associate(models: ISequelizeModel<Like>) {
-			Like.belongsTo(models.User, {
-				foreignKey: "userId",
-				as: "liked",
-			});
-			Like.belongsTo(models.Post, {
-				foreignKey: "postId",
-				as: "likes",
-			});
+			// Like.belongsTo(models.User, {
+			// 	foreignKey: "userId",
+			// 	as: "liked",
+			// });
+			// Like.belongsTo(models.Post, {
+			// 	foreignKey: "postId",
+			// 	as: "likes",
+			// });
 		}
 	}
 	Like.init(

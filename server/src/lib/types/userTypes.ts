@@ -4,7 +4,7 @@ export type TUserAttributes = {
 	username: string;
 	email: string;
 	password: string;
-	imageUrl: URL;
+	imageUrl: URL | string;
 	bio: string;
 	createdAt: Date;
 	updatedAt: Date;

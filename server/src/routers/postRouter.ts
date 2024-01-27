@@ -13,8 +13,8 @@ router
 	.post("/:id/saves", PostController.addSaveToRecord)
 	.delete("/:id", PostController.deletePost)
 	.delete("/image/:imageId", PostController.deleteImageFromStorage)
-	.delete("/likes/:likeId", PostController.removeLikeFromPost)
-	.delete("/saves/:saveId", PostController.removeSaveFromRecord)
+	.delete("/likes/:id", PostController.removeLikeFromPost)
+	.delete("/saves/:id", PostController.removeSaveFromRecord)
 	.put("/:id", PostController.updatePost);
 
 export default router;

@@ -80,10 +80,38 @@ export default class AuthController {
 
 			const user = await db.User.findOne({
 				where: { id, email },
+				include: {
+					model: db.Post,
+					as: "liked",
+					include: {
+						model: db.User,
+						as: "createdBy",
+						attributes: ["name", "imageUrl"],
+					},
+				},
 				attributes: { exclude: ["password", "createdAt", "updatedAt"] },
 			});
 
 			if (!user) throw new BaseError("NotFound", "User is not found");
+
+			res.status(200).json(user);
+		} catch (err) {
+			next(err);
+		}
+	}
+
+	static async getUserProfile(req: Request, res: Response, next: NextFunction) {
+		try {
+			const { username } = req.params;
+			const user = await db.User.findOne({
+				where: { username },
+				attributes: { exclude: ["password", "createdAt", "updatedAt"] },
+				include: {
+					model: db.Post,
+					as: "posted",
+					include: { model: db.User, as: "createdBy" },
+				},
+			});
 
 			res.status(200).json(user);
 		} catch (err) {

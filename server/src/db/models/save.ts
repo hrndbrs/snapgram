@@ -15,14 +15,14 @@ export default (
 		TStatCreationAttributes
 	> {
 		static associate(models: ISequelizeModel<Save>) {
-			Save.belongsTo(models.User, {
-				foreignKey: "userId",
-				as: "saved",
-			});
-			Save.belongsTo(models.Post, {
-				foreignKey: "postId",
-				as: "saves",
-			});
+			// Save.belongsTo(models.User, {
+			// 	foreignKey: "userId",
+			// 	as: "saved",
+			// });
+			// Save.belongsTo(models.Post, {
+			// 	foreignKey: "postId",
+			// 	as: "saves",
+			// });
 		}
 	}
 	Save.init(

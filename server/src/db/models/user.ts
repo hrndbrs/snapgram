@@ -34,7 +34,7 @@ export default (
 		declare email: string;
 		declare username: string;
 		declare password: string;
-		declare imageUrl: URL;
+		declare imageUrl: string;
 		declare bio: string;
 		declare createdAt: Date;
 		declare updatedAt: Date;
@@ -42,26 +42,26 @@ export default (
 		static associate(models: ISequelizeModel<User>) {
 			User.hasMany(models.Post, {
 				foreignKey: "creatorId",
-				as: "creator",
+				as: "posted",
 			});
-			User.hasMany(models.Like, {
-				foreignKey: "userId",
-				as: "likes",
-			});
-			User.hasMany(models.Save, {
-				foreignKey: "userId",
-				as: "saves",
-			});
-			// User.belongsToMany(models.Post, {
+			// User.hasMany(models.Like, {
 			// 	foreignKey: "userId",
-			// 	through: models.Like,
-			// 	as: "liked",
+			// 	as: "likes",
 			// });
-			// User.belongsToMany(models.Post, {
+			// User.hasMany(models.Save, {
 			// 	foreignKey: "userId",
-			// 	through: models.Save,
-			// 	as: "saved",
+			// 	as: "saves",
 			// });
+			User.belongsToMany(models.Post, {
+				foreignKey: "userId",
+				through: models.Like,
+				as: "liked",
+			});
+			User.belongsToMany(models.Post, {
+				foreignKey: "userId",
+				through: models.Save,
+				as: "saved",
+			});
 		}
 	}
 	User.init(
@@ -108,6 +108,14 @@ export default (
 
 	User.beforeCreate((user) => {
 		user.password = hashPassword(user.password);
+
+		const queryParams = new URLSearchParams({
+			name: user.name,
+			size: "128",
+			format: "svg",
+		}).toString();
+
+		user.imageUrl = `https://ui-avatars.com/api/?${queryParams}`;
 	});
 	return User;
 };
