@@ -29,5 +29,5 @@ export type TPostStatsProps = {
 export type TPostStats = {
 	id: number;
 	userId: string;
-	postId?: string;
+	postId: string;
 };

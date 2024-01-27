@@ -13,7 +13,7 @@ const editIconSize = 20;
 	<div class="post-card">
 		<div class="flex-between">
 			<div class="flex item-center gap-3">
-				<RouterLink :to="`/users/${post.creatorId}`">
+				<RouterLink :to="`/users/${post.createdBy?.username}`">
 					<img
 						:src="post.createdBy?.imageUrl"
 						:alt="`@${post.createdBy?.username}`"
@@ -35,7 +35,7 @@ const editIconSize = 20;
 			</div>
 			<RouterLink
 				v-show="loggedUser.id === post.creatorId"
-				:to="`/post/${post.id}/update`"
+				:to="`/posts/${post.id}/update`"
 			>
 				<img
 					src="@/assets/icons/edit.svg"
@@ -45,7 +45,7 @@ const editIconSize = 20;
 				/>
 			</RouterLink>
 		</div>
-		<RouterLink :to="`/post/${post.id}`">
+		<RouterLink :to="`/posts/${post.id}`">
 			<div class="small-medium lg:base-medium py-5">
 				<p>{{ post.caption }}</p>
 				<ul>

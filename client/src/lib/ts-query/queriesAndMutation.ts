@@ -8,7 +8,8 @@ import {
 import { useAuthStore, usePostStore } from "@/store";
 import { QUERY_KEYS } from "./queryKeys";
 
-const { createNewUser, signInUser, signOutAccount } = useAuthStore();
+const { createNewUser, getUser, signInUser, signOutAccount, getUserProfile } =
+	useAuthStore();
 const {
 	uploadPost,
 	updatePost,
@@ -37,6 +38,21 @@ export function useSignInAccount() {
 export function useSignOut() {
 	return useMutation({
 		mutationFn: signOutAccount,
+	});
+}
+
+export function useGetCurrentUser() {
+	return useQuery({
+		queryKey: [QUERY_KEYS.GET_CURRENT_USER],
+		queryFn: getUser,
+	});
+}
+
+export function useGetUserByUsername(username: string) {
+	return useQuery({
+		queryKey: [QUERY_KEYS.GET_USER_PROFILE, username],
+		queryFn: () => getUserProfile(username),
+		enabled: !!username,
 	});
 }
 
@@ -117,9 +133,13 @@ export function useLikePost() {
 			queryClient.invalidateQueries({
 				queryKey: [QUERY_KEYS.GET_POST_STATS, data.postId],
 			});
+			queryClient.invalidateQueries({
+				queryKey: [QUERY_KEYS.GET_CURRENT_USER],
+			});
 		},
 	});
 }
+
 export function useSavePost() {
 	const queryClient = useQueryClient();
 
@@ -129,9 +149,13 @@ export function useSavePost() {
 			queryClient.invalidateQueries({
 				queryKey: [QUERY_KEYS.GET_POST_STATS, data.postId],
 			});
+			queryClient.invalidateQueries({
+				queryKey: [QUERY_KEYS.GET_CURRENT_USER],
+			});
 		},
 	});
 }
+
 export function useRemoveLikedPost() {
 	const queryClient = useQueryClient();
 
@@ -141,9 +165,13 @@ export function useRemoveLikedPost() {
 			queryClient.invalidateQueries({
 				queryKey: [QUERY_KEYS.GET_POST_STATS, data.postId],
 			});
+			queryClient.invalidateQueries({
+				queryKey: [QUERY_KEYS.GET_CURRENT_USER],
+			});
 		},
 	});
 }
+
 export function useRemoveSavedPost() {
 	const queryClient = useQueryClient();
 
@@ -152,6 +180,9 @@ export function useRemoveSavedPost() {
 		onSuccess: (data) => {
 			queryClient.invalidateQueries({
 				queryKey: [QUERY_KEYS.GET_POST_STATS, data.postId],
+			});
+			queryClient.invalidateQueries({
+				queryKey: [QUERY_KEYS.GET_CURRENT_USER],
 			});
 		},
 	});

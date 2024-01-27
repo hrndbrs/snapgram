@@ -10,17 +10,17 @@ const router = createRouter({
 			component: () => import("../layouts/RootLayout.vue"),
 			beforeEnter: async (_to, _from, next) => {
 				try {
-					const { loggedUser, getUser } = useAuthStore();
+					const { loggedUser, getUser, setLoggedUser } = useAuthStore();
 
 					if (!loggedUser.isLoggedIn) {
-						await getUser();
+						const user = await getUser();
+						setLoggedUser(user);
 					}
 					next();
 				} catch (err) {
 					next({ name: "signin" });
 				}
 			},
-
 			children: [
 				{
 					path: "/",
@@ -41,8 +41,31 @@ const router = createRouter({
 							component: () => import("../views/AllUsersView.vue"),
 						},
 						{
+							path: ":userId/update-profile",
+							component: {
+								template: "update string",
+							},
+						},
+						{
 							path: ":username",
 							component: () => import("../views/ProfileView.vue"),
+							children: [
+								{
+									path: "",
+									component: () =>
+										import("../components/shared/ProfilePostDisplay.vue"),
+								},
+								{
+									path: "likes",
+									beforeEnter: (to, _from, next) => {
+										const { username } = to.params;
+										const { loggedUser } = useAuthStore();
+										if (loggedUser.username === username) next();
+										else next(`/users/${username}`);
+									},
+									component: () => import("../views/LikedPosts.vue"),
+								},
+							],
 						},
 					],
 				},
@@ -52,7 +75,7 @@ const router = createRouter({
 					component: () => import("../views/SavedPostsView.vue"),
 				},
 				{
-					path: "post",
+					path: "posts",
 					children: [
 						{
 							path: ":id",
@@ -81,8 +104,9 @@ const router = createRouter({
 			component: () => import("../layouts/AuthLayout.vue"),
 			beforeEnter: async (_to, _from, next) => {
 				try {
-					const { loggedUser, getUser } = useAuthStore();
-					await getUser();
+					const { loggedUser, getUser, setLoggedUser } = useAuthStore();
+					const user = await getUser();
+					setLoggedUser(user);
 
 					if (loggedUser.isLoggedIn) throw new Error();
 

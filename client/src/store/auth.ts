@@ -26,10 +26,7 @@ const useAuthStore = defineStore("auth", () => {
 	}
 
 	async function signInUser(payload: { email: string; password: string }) {
-		const { data: user }: { data: TUser } = await serverClient.post(
-			"/signin",
-			payload
-		);
+		const { data: user } = await serverClient.post<TUser>("/signin", payload);
 		setLoggedUser(user);
 	}
 
@@ -38,11 +35,26 @@ const useAuthStore = defineStore("auth", () => {
 	}
 
 	async function getUser() {
-		const { data: user }: { data: TUser } = await serverClient.get("/user");
-		setLoggedUser(user);
+		const { data: user } = await serverClient.get<TUser>("/user");
+		return user;
 	}
 
-	return { loggedUser, createNewUser, signInUser, getUser, signOutAccount };
+	async function getUserProfile(username: string) {
+		const { data: user } = await serverClient.get<TUser>(
+			`/users/${username}/profile`
+		);
+		return user;
+	}
+
+	return {
+		loggedUser,
+		setLoggedUser,
+		createNewUser,
+		signInUser,
+		getUser,
+		signOutAccount,
+		getUserProfile,
+	};
 });
 
 export default useAuthStore;

@@ -5,3 +5,6 @@ export { default as LeftSideBar } from "./LeftSideBar.vue";
 export { default as FileUploader } from "./FileUploader.vue";
 export { default as PostCard } from "./PostCard.vue";
 export { default as PostStats } from "./PostStats.vue";
+export { default as SearchResults } from "./SearchResults.vue";
+export { default as GridPostList } from "./GridPostList.vue";
+export { default as StatBlock } from "./StatBlock.vue";

@@ -1,4 +1,5 @@
 <script setup lang="ts">
+import { useRoute } from "vue-router";
 import { TPostStatsProps } from "@/lib/types/post";
 import { generateLogoURL } from "@/lib/helpers/index";
 import {
@@ -9,6 +10,7 @@ import {
 	useRemoveSavedPost,
 } from "@/lib/ts-query/queriesAndMutation";
 
+const route = useRoute();
 const { post, userId } = defineProps<TPostStatsProps>();
 
 const { data: stats } = useGetPostStats(post.id);
@@ -19,19 +21,26 @@ const { mutateAsync: removeSavedPost } = useRemoveSavedPost();
 
 const iconSize = 20;
 
+function isDisplayedInProfile() {
+	return route.fullPath.startsWith("/users");
+}
+
 function handleLikePost() {
 	const liked = stats.value?.likes.find((like) => like.userId === userId);
 	if (!liked) return likePost(post.id);
-	return removeLikedPost(liked.id);
+	return removeLikedPost(post.id);
 }
 function handleSavePost() {
 	const saved = stats.value?.saves.find((save) => save.userId === userId);
 	if (!saved) return savePost(post.id);
-	return removeSavedPost(saved.id);
+	return removeSavedPost(post.id);
 }
 </script>
 <template>
-	<div class="flex justify-between items-center z-20">
+	<div
+		class="flex justify-between items-center z-20"
+		:class="isDisplayedInProfile() && 'w-full'"
+	>
 		<div class="flex gap-2 mr-5">
 			<img
 				:src="

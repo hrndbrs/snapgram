@@ -8,7 +8,7 @@ import { TopBar, LeftSideBar, BottomBar } from "@/components/shared";
 		<TopBar />
 		<LeftSideBar />
 		<section class="flex flex-1 h-full">
-			<RouterView />
+			<RouterView :key="$route.fullPath" />
 		</section>
 		<BottomBar />
 	</div>

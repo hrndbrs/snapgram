@@ -73,6 +73,8 @@ const usePostStore = defineStore("post", () => {
 		return data;
 	}
 
+	// async function getExplorePosts(pageParam: number) {}
+
 	async function getPosts(): Promise<TPost[]> {
 		const { data } = await serverClient.get("/posts");
 		return data;
@@ -93,16 +95,16 @@ const usePostStore = defineStore("post", () => {
 		const { data } = await serverClient.post(`/posts/${postId}/likes`);
 		return data;
 	}
-	async function removeLikedPost(likeId: number): Promise<TPostStats> {
-		const { data } = await serverClient.delete(`/posts/likes/${likeId}`);
+	async function removeLikedPost(postId: string): Promise<TPostStats> {
+		const { data } = await serverClient.delete(`/posts/likes/${postId}`);
 		return data;
 	}
 	async function savePost(postId: string): Promise<TPostStats> {
 		const { data } = await serverClient.post(`/posts/${postId}/saves`);
 		return data;
 	}
-	async function removeSavedPost(saveId: number): Promise<TPostStats> {
-		const { data } = await serverClient.delete(`/posts/saves/${saveId}`);
+	async function removeSavedPost(postId: string): Promise<TPostStats> {
+		const { data } = await serverClient.delete(`/posts/saves/${postId}`);
 		return data;
 	}
 
